@@ -1,5 +1,5 @@
 mercado = ['Ações','Opções','Futuro','Dolar','Ouro','Criptomoedas']
 
-fut = 'Futuro' in mercado
+mercado[1] = 'Commodity' 
 
-print(fut)
+print(mercado)
