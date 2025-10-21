@@ -1,1 +1,3 @@
-print (2**3)
+import streamlit as st
+
+st.write (2**3)
