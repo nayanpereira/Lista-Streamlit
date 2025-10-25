@@ -1,139 +1,89 @@
-# Criar um menu de opções 
-#match case
+import streamlit as st
 
-"""
-append() : Adiconar um elemento na lista
-clear() : Limpar a lista
-count() : conta quantos elementos
-extend() : retorna o valor do indece
+st.title("💈 Sistema de Barbearia (versão simples)")
 
-insert() : 
-Reverse() :
-sort ()
-... entre outras 
-"""
-# estrutura de condição ou seleção
-# if 
-# if else
-# if elif else 
-# match case
+# Lista de clientes (guardada em sessão, para não sumir ao clicar)
+if "clientes" not in st.session_state:
+    st.session_state.clientes = []
 
-'''
-Create() : Criar
-Read() : Ler/visualizar
-Update: Atualizar/editar
-Delete (Excluir/Deletar)
-'''
-import os
+clientes = st.session_state.clientes
 
-print ("Sistema de Barbearia")
-print (" ")
-clientes = []
+# Menu principal — simulando o menu de opções
+opcao = st.selectbox(
+    "Escolha uma opção:",
+    [
+        "1 - Agendar cliente no final da fila (CREATE)",
+        "2 - Visualizar Agendamentos (READ)",
+        "3 - Atualizar Agendamento (UPDATE)",
+        "4 - Cancelar Agendamento (DELETE)",
+        "5 - Inserir cliente em posição específica (insert)",
+        "6 - Ordenar agendamentos (A-Z) (sort)",
+        "7 - Inverter ordem dos agendamentos (reverse)",
+        "8 - Sair",
+    ],
+)
 
-cont = True
-while cont == True:
-    print("\n--- Sistema de Gerenciamento de Barbearia ---")
-    print("1. Agendar cliente no final da fila (CREATE - append)")
-    print("2. Visualizar Agendamentos (READ)")
-    print("3. Atualizar Agendamento (UPDATE)")
-    print("4. Cancelar Agendamento (DELETE)")
-    print("-----------------------------------------------")
-    print("5. Inserir cliente em posição específica (insert)")
-    print("6. Ordenar agendamentos (A-Z) (sort)")
-    print("7. Inverter ordem dos agendamentos (reverse)")
-    print("-----------------------------------------------")
-    print("8. Sair")
+st.write("---")
 
-    opcao = 0 
-    try:
-        opcao = int(input("\nDigite a opção desejada: "))
-    except ValueError:
-        print("Erro: Por favor, digite apenas um número.")
-        continue 
-
-    # 
-    # É AQUI QUE O 'MATCH CASE' COMEÇA
-    # 
-    match opcao: # 'match' é o 'switch'
-        
-        case 1: # 'case' é o 'case'
-            nome = input("Digite o nome do cliente: ")
+# Match case simplificado usando if/elif
+if "Sair" in opcao:
+    st.success("Saindo do sistema... (basta fechar a aba)")
+elif "Agendar" in opcao:
+    nome = st.text_input("Digite o nome do cliente para agendar:")
+    if st.button("Salvar agendamento"):
+        if nome:
             clientes.append(nome)
-            print(f"Cliente '{nome}' agendado com sucesso no FIM da fila.")
+            st.success(f"Cliente '{nome}' agendado com sucesso!")
+        else:
+            st.warning("Por favor, digite um nome.")
+elif "Visualizar" in opcao:
+    if not clientes:
+        st.info("Nenhum agendamento cadastrado.")
+    else:
+        st.subheader("📋 Lista de Agendamentos")
+        for i, cliente in enumerate(clientes, 1):
+            st.write(f"{i}. {cliente}")
+elif "Atualizar" in opcao:
+    if not clientes:
+        st.info("Nenhum agendamento para atualizar.")
+    else:
+        nome_antigo = st.selectbox("Selecione o cliente:", clientes)
+        nome_novo = st.text_input("Digite o novo nome:")
+        if st.button("Atualizar"):
+            index = clientes.index(nome_antigo)
+            clientes[index] = nome_novo
+            st.success(f"'{nome_antigo}' atualizado para '{nome_novo}'.")
+elif "Cancelar" in opcao:
+    if not clientes:
+        st.info("Nenhum agendamento para cancelar.")
+    else:
+        nome_remover = st.selectbox("Selecione o cliente:", clientes)
+        if st.button("Cancelar agendamento"):
+            clientes.remove(nome_remover)
+            st.success(f"Agendamento de '{nome_remover}' cancelado.")
+elif "Inserir" in opcao:
+    nome = st.text_input("Digite o nome do cliente:")
+    pos = st.number_input(
+        f"Digite a posição (0 até {len(clientes)}):",
+        min_value=0,
+        max_value=len(clientes),
+        step=1,
+    )
+    if st.button("Inserir cliente"):
+        clientes.insert(pos, nome)
+        st.success(f"Cliente '{nome}' inserido na posição {pos}.")
+elif "Ordenar" in opcao:
+    if clientes:
+        clientes.sort()
+        st.success("Agendamentos ordenados de A-Z!")
+    else:
+        st.info("Lista vazia.")
+elif "Inverter" in opcao:
+    if clientes:
+        clientes.reverse()
+        st.success("Ordem dos agendamentos invertida.")
+    else:
+        st.info("Lista vazia.")
 
-        case 2: # READ
-            if not clientes: 
-                print("Nenhum agendamento cadastrado.")
-            else:
-                print("\n--- Lista de Agendamentos ---")
-                for i, cliente in enumerate(clientes, 1):
-                    print(f"{i}. {cliente}")
-
-        case 3: # UPDATE
-            if not clientes:
-                print("Nenhum agendamento para atualizar.")
-            else:
-                nome_antigo = input("Digite o nome do cliente que deseja ATUALIZAR: ")
-                if nome_antigo in clientes:
-                    index = clientes.index(nome_antigo) 
-                    nome_novo = input(f"Digite o novo nome para '{nome_antigo}': ")
-                    clientes[index] = nome_novo
-                    print("Agendamento atualizado com sucesso!")
-                else:
-                    print(f"Cliente '{nome_antigo}' não encontrado na lista.")
-
-        case 4: # DELETE
-            if not clientes:
-                print("Nenhum agendamento para cancelar.")
-            else:
-                nome_remover = input("Digite o nome do cliente que deseja CANCELAR: ")
-                if nome_remover in clientes:
-                    clientes.remove(nome_remover)
-                    print(f"Agendamento de '{nome_remover}' cancelado com sucesso.")
-                else:
-                    print(f"Cliente '{nome_remover}' não encontrado na lista.")
-
-        case 5: # Usando insert()
-            print("--- Inserir em Posição Específica ---")
-            if not clientes:
-                posicao = 0
-            else:
-                print(f"Posições disponíveis: 0 (início) até {len(clientes)} (final).")
-                try:
-                    posicao = int(input("Digite a posição (índice) onde deseja inserir: "))
-                    if posicao < 0 or posicao > len(clientes):
-                         posicao = len(clientes) 
-                except ValueError:
-                    posicao = len(clientes)
-            
-            nome = input("Digite o nome do cliente a inserir: ")
-            clientes.insert(posicao, nome)
-            print(f"Cliente '{nome}' inserido na posição {posicao}.")
-
-        case 6: # Usando sort()
-            if not clientes:
-                print("Lista vazia, nada para ordenar.")
-            else:
-                clientes.sort()
-                print("Agendamentos ordenados de A-Z com sucesso.")
-
-        case 7: # Usando reverse()
-            if not clientes:
-                print("Lista vazia, nada para inverter.")
-            else:
-                clientes.reverse()
-                print("Ordem dos agendamentos foi invertida com sucesso.")
-        
-        case 8: # Sair
-            print("Saindo do sistema...")
-            cont = False 
-
-        case _: # 'case _' é o 'default' (caso padrão)
-            print("Opção inválida! Por favor, escolha um número do menu.")
-
-    # Pausa para o usuário ler a saída antes de limpar
-    if cont == True:
-        input("\nPressione Enter para continuar...")
-        os.system('cls' if os.name == 'nt' else 'clear') # Limpa o console
-
-print("Sistema de Barbearia finalizado.")
+st.write("---")
+st.caption("Versão simplificada do sistema de barbearia — feita com Streamlit.")

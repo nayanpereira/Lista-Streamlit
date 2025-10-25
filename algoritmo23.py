@@ -1,3 +1,5 @@
+import streamlit as st
 mercado = ['ações', 'opções', 'futuro', 'Dolar', 'Ouro', 'Criprtomoedas']
 
-print(mercado.index('Dolar'))
+st.write(mercado)
+st.write(mercado.index('Dolar'))

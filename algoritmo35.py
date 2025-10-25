@@ -1,10 +1,11 @@
 # Ler nome, endereço e telefone e imprimi-los.
+import streamlit as st
 
-nome = input("Digite seu nome: ")
-endereco = input("Digite seu endereço: ")
-telefone = input("Digite seu telefone: ")
+nome = st.text_input("Digite seu nome: ")
+endereco = st.text_input("Digite seu endereço: ")
+telefone = st.text_input("Digite seu telefone: ")
 
-print("\n--- Seus Dados ---")
-print(f"Nome: {nome}")
-print(f"Endereço: {endereco}")
-print(f"Telefone: {telefone}")
+st.write("\n--- Seus Dados ---")
+st.write(f"Nome: {nome}")
+st.write(f"Endereço: {endereco}")
+st.write(f"Telefone: {telefone}")
